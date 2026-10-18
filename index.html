@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R & AI AGENT - Shop Onboarding & QR Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-gray-900 min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-lg w-full">
+
+    <!-- TOP TABS -->
+    <div class="flex bg-indigo-950/60 p-1.5 rounded-2xl mb-6 border border-indigo-700/50">
+      <button id="tabRegister" onclick="switchTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-white bg-indigo-600 transition">
+        1. Register Shop
+      </button>
+      <button id="tabStatus" onclick="switchTab('status')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-gray-300 hover:text-white transition">
+        2. Download My QR
+      </button>
+    </div>
+
+    <!-- 1. REGISTRATION FORM -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8" id="form-container">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-extrabold text-indigo-600">R & AI AGENT</h1>
+        <p class="text-sm text-gray-500 mt-1">Shop Owner Monthly Subscription Portal</p>
+      </div>
+
+      <form id="registrationForm" onsubmit="showPaymentSection(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Owner Name</label>
+          <input type="text" id="ownerName" required class="w-full px-4 py-2 border border-gray-300 rounded-xl text-sm" placeholder="Aapka naam">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Mobile Number</label>
+            <input type="tel" id="mobile" required class="w-full px-4 py-2 border border-gray-300 rounded-xl text-sm" placeholder="Mobile number">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Shop Name</label>
+            <input type="text" id="shopName" required class="w-full px-4 py-2 border border-gray-300 rounded-xl text-sm" placeholder="e.g. Lakshmi Interior">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Shop Category</label>
+          <select id="shopCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-xl text-sm bg-white">
+            <option value="">-- Category Select Karein --</option>
+            <option value="Interior & Hardware">Interior & Hardware</option>
+            <option value="Clothing & Fashion">Clothing & Fashion</option>
+            <option value="Men's Salon & Spa">Men's Salon & Spa</option>
+            <option value="Mobile & Electronics">Mobile & Electronics</option>
+            <option value="Restaurant & Cafe">Restaurant & Cafe</option>
+            <option value="General Store">General Store</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Google Maps Review Link URL</label>
+          <input type="text" id="mapUrl" required class="w-full px-4 py-2 border border-gray-300 rounded-xl text-sm" placeholder="Google Maps review link paste karein">
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition mt-3">
+          Proceed to Pay ₹799
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. PAYMENT SCANNER (Munaf Lal UPI) -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8 text-center hidden" id="payment-container">
+      <h2 class="text-2xl font-bold text-gray-800 mb-1">Scan & Pay ₹799</h2>
+      <p class="text-sm text-gray-500 mb-4">Payment karne ke baad submit button par click karein.</p>
+      
+      <div class="bg-gray-50 p-4 rounded-2xl inline-block mb-4 border border-gray-200 shadow-inner">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=lalmunaf447@oksbi&pn=MUNAF%20LAL&am=499&cu=INR" alt="Munaf Lal UPI QR" class="mx-auto rounded w-48 h-48">
+        <p class="text-xs font-bold text-indigo-600 mt-2">MUNAF LAL</p>
+        <p class="text-xs text-gray-500 font-mono">UPI ID: lalmunaf447@oksbi</p>
+      </div>
+
+      <button onclick="submitPaymentProof()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition">
+        Maine Payment Kar Diya (Submit)
+      </button>
+    </div>
+
+    <!-- 3. DOWNLOAD QR STATUS SECTION -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8 hidden" id="status-container">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-indigo-600">Download AI QR Stand</h2>
+        <p class="text-xs text-gray-500 mt-1">Apna registered mobile number daal kar QR unlock karein</p>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Registered Mobile Number</label>
+          <input type="tel" id="checkMobile" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm" placeholder="Enter 10-digit mobile number">
+        </div>
+        <button onclick="checkQRStatus()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition">
+          Check & Download QR Stand
+        </button>
+      </div>
+
+      <div id="statusResult" class="hidden"></div>
+    </div>
+
+  </div>
+
+  <script>
+    let tempShopData = {};
+
+    function switchTab(tab) {
+      document.getElementById('form-container').classList.add('hidden');
+      document.getElementById('payment-container').classList.add('hidden');
+      document.getElementById('status-container').classList.add('hidden');
+
+      if(tab === 'register') {
+        document.getElementById('form-container').classList.remove('hidden');
+        document.getElementById('tabRegister').className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-white bg-indigo-600 transition";
+        document.getElementById('tabStatus').className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-gray-300 hover:text-white transition";
+      } else {
+        document.getElementById('status-container').classList.remove('hidden');
+        document.getElementById('tabStatus').className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-white bg-indigo-600 transition";
+        document.getElementById('tabRegister').className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-gray-300 hover:text-white transition";
+      }
+    }
+
+    function showPaymentSection(e) {
+      e.preventDefault();
+      
+      tempShopData = {
+        ownerName: document.getElementById('ownerName').value,
+        mobile: document.getElementById('mobile').value,
+        shopName: document.getElementById('shopName').value,
+        shopCategory: document.getElementById('shopCategory').value,
+        mapUrl: document.getElementById('mapUrl').value,
+        paid: false,
+        date: new Date().toLocaleString()
+      };
+
+      document.getElementById('form-container').classList.add('hidden');
+      document.getElementById('payment-container').classList.remove('hidden');
+    }
+
+    function submitPaymentProof() {
+      let allShops = JSON.parse(localStorage.getItem('r_ai_shops')) || [];
+      const existingIndex = allShops.findIndex(s => s.mobile === tempShopData.mobile);
+      if(existingIndex !== -1) {
+        allShops[existingIndex] = tempShopData;
+      } else {
+        allShops.push(tempShopData);
+      }
+      localStorage.setItem('r_ai_shops', JSON.stringify(allShops));
+
+      alert("🎉 Details Submitted! Admin Verification ke baad aap 'Download My QR' tab se QR download kar sakte hain.");
+      switchTab('status');
+      document.getElementById('checkMobile').value = tempShopData.mobile;
+      checkQRStatus();
+    }
+
+    function checkQRStatus() {
+      const mobile = document.getElementById('checkMobile').value.trim();
+      const resultDiv = document.getElementById('statusResult');
+      resultDiv.classList.remove('hidden');
+
+      if (!mobile) {
+        resultDiv.innerHTML = `<p class="text-red-500 text-xs text-center">Kripya apna mobile number daalein!</p>`;
+        return;
+      }
+
+      let allShops = JSON.parse(localStorage.getItem('r_ai_shops')) || [];
+      let shop = allShops.find(s => s.mobile === mobile);
+
+      if (!shop) {
+        resultDiv.innerHTML = `<div class="bg-red-50 text-red-700 p-4 rounded-xl text-xs text-center border border-red-200">Is mobile number se koi registration nahi mila. Kripya pehle register karein.</div>`;
+        return;
+      }
+
+      if (!shop.paid) {
+        resultDiv.innerHTML = `
+          <div class="bg-yellow-50 text-yellow-800 p-5 rounded-xl text-center border border-yellow-200">
+            <div class="text-2xl mb-2">⏳</div>
+            <h3 class="font-bold text-sm mb-1">Verification Pending</h3>
+            <p class="text-xs text-gray-600">Aapki payment ki janch ho rahi hai. Admin approval ke baad yahan QR Stand unlock ho jayega!</p>
+          </div>`;
+      } else {
+        // Updated Absolute URL generation for review.html
+        const reviewUrl = new URL('review.html', window.location.href);
+        reviewUrl.searchParams.set('shop', shop.shopName);
+        reviewUrl.searchParams.set('category', shop.shopCategory || '');
+        reviewUrl.searchParams.set('map', shop.mapUrl);
+
+        const customerPageUrl = reviewUrl.toString();
+        const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(customerPageUrl)}`;
+
+        resultDiv.innerHTML = `
+          <div class="border-4 border-indigo-600 rounded-2xl p-5 bg-gradient-to-b from-indigo-50 to-white text-center shadow-lg">
+            <h2 class="text-2xl font-black text-indigo-900 tracking-wider">R & AI AGENT</h2>
+            <p class="text-[10px] font-bold text-indigo-600 tracking-widest uppercase mb-3">AI Powered Google Review System</p>
+            
+            <div class="bg-indigo-600 text-white py-2 px-3 rounded-xl font-extrabold text-lg shadow-md mb-1">
+              ${shop.shopName}
+            </div>
+            <p class="text-[11px] font-semibold text-gray-500 mb-3">${shop.shopCategory || 'General Store'}</p>
+
+            <p class="text-xs font-bold text-gray-700 mb-2">Scan QR & Share Your Experience!</p>
+
+            <div class="flex justify-center mb-3 p-3 bg-white border-2 border-indigo-100 rounded-2xl shadow-inner inline-block">
+              <img src="${qrImageUrl}" alt="AI Review QR Code" class="w-44 h-44 rounded-lg">
+            </div>
+
+            <div class="flex items-center justify-center text-yellow-400 text-2xl space-x-1 mb-2">
+              ★ ★ ★ ★ ★
+            </div>
+            
+            <p class="text-[10px] font-medium text-gray-500 mb-4">Fast 5-Star AI Review in 1 Click</p>
+
+            <button onclick="window.print()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">
+              🖨️ Print / Save Stand Card
+            </button>
+          </div>`;
+      }
+    }
+  </script>
+</body>
+</html>
