@@ -1,115 +1,84 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>R & AI AGENT - Leave a Review</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Review Assistant</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: #1e293b; padding: 25px; border-radius: 16px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        h3 { color: #38bdf8; margin-top: 0; }
+        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
+        .chip { background: #0f172a; border: 1px solid #475569; padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .chip.selected { background: #0284c7; border-color: #38bdf8; color: white; }
+        textarea { width: 100%; height: 110px; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 14px; margin-top: 10px; resize: none; }
+        .btn { background: #10b981; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body>
 
-  <div class="bg-white rounded-3xl shadow-xl max-w-md w-full p-6 text-center border">
-    
-    <div class="mb-4">
-      <span class="bg-indigo-100 text-indigo-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">R & AI AGENT</span>
-      <h2 class="text-2xl font-black text-gray-800 mt-2" id="displayShopName">Shop Name</h2>
-      <p class="text-xs text-gray-500 font-medium" id="displayCategory">Category</p>
+<div class="card">
+    <h3 id="displayShopName">Store Review</h3>
+    <p style="font-size: 13px; color: #94a3b8;">Select your experience to generate 5-Star Review:</p>
+
+    <div class="chip-container" id="chipBox">
+        <div class="chip selected" onclick="toggleChip(this)">Great Quality</div>
+        <div class="chip selected" onclick="toggleChip(this)">Excellent Service</div>
+        <div class="chip" onclick="toggleChip(this)">Best Prices</div>
+        <div class="chip" onclick="toggleChip(this)">Polite Staff</div>
+        <div class="chip" onclick="toggleChip(this)">Highly Recommended</div>
     </div>
 
-    <div class="flex justify-center text-yellow-400 text-3xl mb-5 space-x-1">
-      ★ ★ ★ ★ ★
-    </div>
+    <textarea id="reviewText" readonly></textarea>
 
-    <p class="text-xs font-bold text-gray-600 mb-3 uppercase tracking-wide">Apna Experience Select Karein</p>
+    <button class="btn" onclick="submitAndOpenGoogle()">Copy Review & Post on Google Maps</button>
+</div>
 
-    <div class="flex flex-wrap gap-2 justify-center mb-6" id="tagsContainer"></div>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const shopName = urlParams.get('shop') || 'Store';
+const placeId = urlParams.get('placeid') || '';
 
-    <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 mb-6 text-left min-h-[90px] flex items-center justify-center">
-      <p id="reviewText" class="text-gray-600 text-sm italic text-center font-medium">
-        Upar kisi bhi topic par click karke AI review generate karein!
-      </p>
-    </div>
+document.getElementById('displayShopName').innerText = shopName;
 
-    <button onclick="submitToGoogleMaps()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-      ⭐ Copy Review & Post on Google Maps
-    </button>
-  </div>
+function toggleChip(element) {
+    element.classList.toggle('selected');
+    generateAIReview();
+}
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const shopName = urlParams.get('shop') || "Our Shop";
-    const category = urlParams.get('category') || "General Store";
-    const mapUrl = urlParams.get('map') || "https://maps.google.com";
-
-    document.getElementById('displayShopName').innerText = shopName;
-    document.getElementById('displayCategory').innerText = category;
-
-    let defaultTags = ["Best Quality", "Affordable Price", "Polite Staff", "Great Experience", "Fast Service"];
-
-    if (category.includes("Mobile")) {
-      defaultTags = ["Original Products", "Best Mobile Deals", "Helpful Staff", "Fast Repair", "Great Experience"];
-    } else if (category.includes("Clothing")) {
-      defaultTags = ["Latest Fashion", "Best Fabric Quality", "Affordable Prices", "Polite Staff", "Highly Recommended"];
-    } else if (category.includes("Salon")) {
-      defaultTags = ["Professional Haircut", "Clean & Hygienic", "Great Styling", "Polite Staff", "Best Service"];
-    } else if (category.includes("Interior")) {
-      defaultTags = ["Premium Quality", "Modern Designs", "Durable Materials", "Best Rates", "Excellent Service"];
+function generateAIReview() {
+    const selectedChips = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.innerText);
+    if(selectedChips.length === 0) {
+        document.getElementById('reviewText').value = `Had a great experience at ${shopName}! Highly recommended.`;
+        return;
     }
+    document.getElementById('reviewText').value = `Visited ${shopName} today. ${selectedChips.join(', ')}. Loved the overall experience and atmosphere!`;
+}
 
-    const tagsContainer = document.getElementById('tagsContainer');
-    let selectedTags = [];
+generateAIReview();
 
-    defaultTags.forEach(tag => {
-      const btn = document.createElement('button');
-      btn.innerText = tag;
-      btn.className = "border border-gray-300 rounded-full px-3.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-indigo-50 transition";
-      btn.onclick = () => toggleTag(btn, tag);
-      tagsContainer.appendChild(btn);
+function submitAndOpenGoogle() {
+    const text = document.getElementById('reviewText').value;
+
+    // Automatic Clipboard Copy
+    navigator.clipboard.writeText(text).then(() => {
+        alert("✅ Review text copy ho gaya hai!\n\nGoogle Maps khulte hi long-press karke PASTE karein aur POST dabayein.");
+        
+        // Direct Write-Review Link (Opens 2nd Photo Layout with 5 Stars)
+        let googleReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+        
+        if(!placeId || placeId.startsWith('http')) {
+            googleReviewUrl = placeId || `https://www.google.com/search?q=${encodeURIComponent(shopName)}`;
+        }
+
+        window.location.href = googleReviewUrl;
+    }).catch(() => {
+        // Fallback redirect
+        window.location.href = `https://search.google.com/local/writereview?placeid=${placeId}`;
     });
+}
+</script>
 
-    function toggleTag(btn, tag) {
-      if (selectedTags.includes(tag)) {
-        selectedTags = selectedTags.filter(t => t !== tag);
-        btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
-        btn.classList.add('border-gray-300', 'text-gray-700');
-      } else {
-        selectedTags.push(tag);
-        btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
-        btn.classList.remove('border-gray-300', 'text-gray-700');
-      }
-      generateAIReview();
-    }
-
-    function generateAIReview() {
-      const reviewBox = document.getElementById('reviewText');
-      if (selectedTags.length === 0) {
-        reviewBox.innerText = "Upar kisi bhi topic par click karke AI review generate karein!";
-        return;
-      }
-
-      const reviews = [
-        `${shopName} par mera experience bohot shandar raha! Inka ${selectedTags.join(' aur ')} sach me lajawab hai. Must visit! ⭐⭐⭐⭐⭐`,
-        `Highly recommended! ${shopName} ki service aur ${selectedTags.join(', ')} bohot acche hain. Top class service! ⭐⭐⭐⭐⭐`,
-        `${shopName} is the best! Yahan ki sabse acchi baat inka ${selectedTags.join(' aur ')} hai. 5 stars from my side! ⭐⭐⭐⭐⭐`
-      ];
-
-      reviewBox.innerText = reviews[Math.floor(Math.random() * reviews.length)];
-    }
-
-    function submitToGoogleMaps() {
-      const text = document.getElementById('reviewText').innerText;
-      if (selectedTags.length === 0) {
-        alert("Kripya kam se kam ek topic click karke review generate karein!");
-        return;
-      }
-
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Review copy ho gaya hai! Google Maps khulte hi paste karke submit kar dein.");
-        window.location.href = mapUrl;
-      }).catch(() => {
-        window.location.href = mapUrl;
-      });
-    }
-  </script>
 </body>
 </html>
