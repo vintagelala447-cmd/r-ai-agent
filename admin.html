@@ -27,12 +27,11 @@
         }
         .designer-card h2 { color: #ffffff; font-size: 24px; text-transform: uppercase; margin: 0 0 5px 0; word-break: break-word; }
         .designer-card p.tagline { color: #38bdf8; font-size: 13px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
-        .designer-card .qr-box { background: #ffffff; padding: 15px; border-radius: 18px; display: inline-block; border: 2px solid #38bdf8; width: 210px; height: 210px; }
+        .designer-card .qr-box { background: #ffffff; padding: 12px; border-radius: 18px; display: inline-block; border: 2px solid #38bdf8; width: 204px; height: 204px; }
+        .designer-card .qr-box img { width: 180px; height: 180px; display: block; }
         .designer-card p.footer { color: #f59e0b; font-size: 13px; font-weight: bold; margin: 20px 0 0 0; }
         .btn-download { background: #10b981; color: white; border: none; padding: 14px 20px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 15px; cursor: pointer; }
     </style>
-    <!-- Library to render direct clean QR Code -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- Library for Image Canvas Capture -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -54,7 +53,10 @@
     <div class="designer-card" id="captureCard">
         <h2 id="cardShopTitle">SHOP NAME</h2>
         <p class="tagline">⭐ Scan to Write 5-Star AI Review ⭐</p>
-        <div class="qr-box" id="qrcode"></div>
+        <div class="qr-box">
+            <!-- Using direct encoded data URI / API with crossorigin support -->
+            <img id="cardQrCodeImg" crossorigin="anonymous" alt="AI Review QR">
+        </div>
         <p class="footer">POWERED BY R & AI AGENT</p>
     </div>
 
@@ -62,6 +64,8 @@
 </div>
 
 <script>
+let isQrLoaded = false;
+
 function generateInstantStandee() {
     const shop = document.getElementById('adminShopName').value.trim();
     const placeid = document.getElementById('adminPlaceId').value.trim();
@@ -72,27 +76,30 @@ function generateInstantStandee() {
     }
 
     const reviewUrl = `https://vintagelala447-cmd.github.io/r-ai-agent/review.html?shop=${encodeURIComponent(shop)}&placeid=${encodeURIComponent(placeid)}`;
+    
+    // Using a reliable robust QR generator API endpoint
+    const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(reviewUrl)}`;
 
-    // Clear previous QR code if any
-    document.getElementById('qrcode').innerHTML = "";
-
-    // Generate direct native QR Code inside box
-    new QRCode(document.getElementById("qrcode"), {
-        text: reviewUrl,
-        width: 180,
-        height: 180,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+    const qrImg = document.getElementById('cardQrCodeImg');
+    isQrLoaded = false;
+    
+    qrImg.onload = function() {
+        isQrLoaded = true;
+    };
+    qrImg.src = qrApi;
 
     document.getElementById('cardShopTitle').innerText = shop;
     document.getElementById('standeeWrapper').style.display = 'block';
 }
 
 function downloadStandeeImage() {
+    if(!isQrLoaded) {
+        alert("Kripya 2 second rukein, QR code load ho raha hai...");
+        return;
+    }
+
     const card = document.getElementById('captureCard');
-    html2canvas(card, { scale: 3, useCORS: true }).then(canvas => {
+    html2canvas(card, { scale: 3, useCORS: true, allowTaint: false }).then(canvas => {
         const link = document.createElement('a');
         link.download = `${document.getElementById('cardShopTitle').innerText}_AI_Standee.png`;
         link.href = canvas.toDataURL('image/png');
