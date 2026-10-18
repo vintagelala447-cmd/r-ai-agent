@@ -26,9 +26,9 @@
     <table>
         <thead>
             <tr>
+                <th>Owner Name</th>
                 <th>Shop Name</th>
                 <th>Mobile</th>
-                <th>UTR ID</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -56,9 +56,9 @@ function renderRequests() {
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><strong>${req.shopName}</strong></td>
+            <td><strong>${req.ownerName || 'N/A'}</strong></td>
+            <td>${req.shopName}</td>
             <td>${req.mobile}</td>
-            <td><code>${req.utr}</code></td>
             <td><span class="${req.status === 'Active' ? 'badge-active' : 'badge-pending'}">${req.status}</span></td>
             <td>
                 ${req.status === 'Pending' ? `<button class="btn-verify" onclick="verifyShop(${index})">Verify & Activate</button>` : ''}
