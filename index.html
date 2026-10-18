@@ -13,7 +13,7 @@
         input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 15px; }
         input:focus { border-color: #38bdf8; outline: none; }
         .btn { background: #0284c7; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn:hover { background: #0369a1; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; text-align: center; text-decoration: none; display: none; }
         .payment-box { background: #0f172a; border: 1px dashed #38bdf8; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px; }
         .upi-id { color: #f59e0b; font-weight: bold; font-size: 18px; margin: 8px 0; }
         .qr-img { width: 190px; height: 190px; margin: 10px auto; border-radius: 10px; border: 2px solid #38bdf8; padding: 6px; background: #fff; display: block; }
@@ -24,7 +24,7 @@
 
 <div class="card">
     <h2>🚀 R & AI AGENT Setup</h2>
-    <p style="text-align:center; font-size: 14px; color: #cbd5e1;">Google Map AI Review QR System (₹799/-)</p>
+    <p style="text-align:center; font-size: 14px; color: #cbd5e1;">Google Map AI Review QR System (₹799/month)</p>
     
     <form id="onboardForm">
         <label>Owner Name</label>
@@ -49,8 +49,10 @@
             <p style="margin:0; font-size:12px; color:#94a3b8;">Payee Name: Munaf Lal</p>
         </div>
 
-        <button type="submit" class="btn">Submit Payment & Request Verification</button>
+        <button type="submit" class="btn">Submit & Save Details</button>
     </form>
+
+    <a id="waBtn" href="#" target="_blank" class="btn-wa">📲 Click Here to Send Details on WhatsApp</a>
 </div>
 
 <script>
@@ -63,7 +65,7 @@ document.getElementById('onboardForm').addEventListener('submit', function(e) {
     const placeId = document.getElementById('placeId').value;
     const mobile = document.getElementById('mobile').value;
 
-    const adminWhatsApp = "919737828591"; // Aapka WhatsApp Number
+    const adminWhatsApp = "919737828591";
 
     const msg = `🚀 *NEW PAYMENT & VERIFICATION REQUEST*%0A%0A` +
                 `👤 *Owner:* ${encodeURIComponent(ownerName)}%0A` +
@@ -75,7 +77,15 @@ document.getElementById('onboardForm').addEventListener('submit', function(e) {
                 `----------------------------%0A` +
                 `👉 *Admin Action:* Type *YES* to confirm payment verification & generate AI Review QR Standee.`;
 
-    window.open(`https://wa.me/${adminWhatsApp}?text=${msg}`, '_blank');
+    const waUrl = `https://wa.me/${adminWhatsApp}?text=${msg}`;
+    
+    // Show direct WhatsApp button
+    const waBtn = document.getElementById('waBtn');
+    waBtn.href = waUrl;
+    waBtn.style.display = 'block';
+
+    // Try auto-open
+    window.open(waUrl, '_blank');
 });
 </script>
 
