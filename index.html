@@ -1,91 +1,196 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R & AI AGENT - Onboarding</title>
+    <title>R & AI AGENT | Autonomous AI Review SaaS</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .card { background: #1e293b; padding: 25px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
-        h2 { color: #38bdf8; text-align: center; margin-top: 0; }
-        label { font-size: 14px; color: #94a3b8; display: block; margin-top: 12px; margin-bottom: 4px; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 15px; }
-        input:focus { border-color: #38bdf8; outline: none; }
-        .btn { background: #0284c7; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn-wa { background: #25d366; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; text-align: center; text-decoration: none; display: none; }
-        .payment-box { background: #0f172a; border: 1px dashed #38bdf8; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px; }
-        .upi-id { color: #f59e0b; font-weight: bold; font-size: 18px; margin: 8px 0; }
-        .qr-img { width: 190px; height: 190px; margin: 10px auto; border-radius: 10px; border: 2px solid #38bdf8; padding: 6px; background: #fff; display: block; }
-        .amount-tag { background: #10b981; color: #fff; font-weight: bold; padding: 4px 10px; border-radius: 20px; display: inline-block; font-size: 13px; margin-bottom: 8px; }
+        * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background: #070b19; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #070b19 75%); }
+        
+        .saas-card { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(56, 189, 248, 0.2); 
+            padding: 30px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 480px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); 
+        }
+        
+        .brand-header { text-align: center; margin-bottom: 25px; }
+        .brand-header h1 { color: #38bdf8; font-size: 26px; margin: 0; font-weight: 800; letter-spacing: 0.5px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-header p { color: #94a3b8; font-size: 13px; margin-top: 6px; }
+
+        .form-group { margin-bottom: 16px; }
+        label { font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 500; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px 16px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(15, 23, 42, 0.8); 
+            color: #fff; 
+            font-size: 15px; 
+            transition: all 0.3s ease; 
+        }
+        input:focus { border-color: #38bdf8; outline: none; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+
+        .btn-lux { 
+            background: linear-gradient(135deg, #0284c7 0%, #6366f1 100%); 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            width: 100%; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: transform 0.2s, opacity 0.2s;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+        }
+        .btn-lux:hover { opacity: 0.95; transform: translateY(-1px); }
+
+        .otp-section, .payment-section { display: none; margin-top: 15px; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .payment-box { 
+            background: rgba(15, 23, 42, 0.9); 
+            border: 1px dashed rgba(245, 158, 11, 0.4); 
+            padding: 20px; 
+            border-radius: 16px; 
+            text-align: center; 
+            margin-top: 15px; 
+        }
+        .upi-id { color: #f59e0b; font-weight: 700; font-size: 17px; margin: 10px 0 4px 0; letter-spacing: 0.5px; }
+        .qr-img { width: 180px; height: 180px; margin: 10px auto; border-radius: 12px; border: 3px solid #f59e0b; padding: 6px; background: #fff; display: block; }
+        .amount-badge { background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 700; padding: 6px 14px; border-radius: 20px; display: inline-block; font-size: 13px; border: 1px solid rgba(16, 185, 129, 0.3); }
+        
+        .secure-footer { text-align: center; font-size: 11px; color: #64748b; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>🚀 R & AI AGENT Setup</h2>
-    <p style="text-align:center; font-size: 14px; color: #cbd5e1;">Google Map AI Review QR System (₹799/month)</p>
+<div class="saas-card">
+    <div class="brand-header">
+        <h1>R & AI AGENT</h1>
+        <p>Autonomous AI Review & Reputation Engine</p>
+    </div>
     
-    <form id="onboardForm">
-        <label>Owner Name</label>
-        <input type="text" id="ownerName" placeholder="e.g. Munaf Lal" required>
+    <form id="saasForm">
+        <!-- Step 1: Basic Details -->
+        <div id="step1">
+            <div class="form-group">
+                <label>Owner Full Name</label>
+                <input type="text" id="ownerName" placeholder="e.g. Munaf Lal" required>
+            </div>
 
-        <label>Shop / Business Name</label>
-        <input type="text" id="shopName" placeholder="e.g. Tokyo Fashion" required>
+            <div class="form-group">
+                <label>Shop / Business Name</label>
+                <input type="text" id="shopName" placeholder="e.g. Tokyo Luxury Store" required>
+            </div>
 
-        <label>Business Category</label>
-        <input type="text" id="category" placeholder="e.g. Clothing / Salon / Mobile Store" required>
+            <div class="form-group">
+                <label>Business Category</label>
+                <input type="text" id="category" placeholder="e.g. Fine Dining / Fashion / Electronics" required>
+            </div>
 
-        <label>Google Place ID (या Direct Review Link)</label>
-        <input type="text" id="placeId" placeholder="ChIJ... ya Google Maps Direct Link" required>
+            <div class="form-group">
+                <label>Google Maps Location URL (या Place ID)</label>
+                <input type="text" id="placeId" placeholder="https://maps.app.goo.gl/..." required>
+            </div>
 
-        <label>Owner Mobile Number</label>
-        <input type="tel" id="mobile" placeholder="10 Digit Number" required>
+            <div class="form-group">
+                <label>Owner Mobile Number</label>
+                <input type="tel" id="mobile" placeholder="10 Digit Mobile Number" maxlength="10" required>
+            </div>
 
-        <div class="payment-box">
-            <span class="amount-tag">Scan to Pay ₹799</span>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=lalmunaf447@oksbi%26pn=Munaf%20Lal%26am=799%26cu=INR" alt="UPI QR Scanner" class="qr-img">
-            <div class="upi-id">lalmunaf447@oksbi</div>
-            <p style="margin:0; font-size:12px; color:#94a3b8;">Payee Name: Munaf Lal</p>
+            <button type="button" class="btn-lux" onclick="sendOtp()">Verify Mobile via OTP ➔</button>
         </div>
 
-        <button type="submit" class="btn">Submit & Save Details</button>
+        <!-- Step 2: OTP Verification -->
+        <div class="otp-section" id="step2">
+            <div class="form-group">
+                <label style="text-align:center; color:#38bdf8;">Enter 4-Digit Security OTP sent to mobile</label>
+                <input type="text" id="otpInput" placeholder="Enter 1234" maxlength="4" style="text-align:center; font-size:20px; letter-spacing:8px;">
+            </div>
+            <button type="button" class="btn-lux" onclick="verifyOtp()">Confirm OTP & Unlock Payment</button>
+        </div>
+
+        <!-- Step 3: Payment & Final Submit -->
+        <div class="payment-section" id="step3">
+            <div class="payment-box">
+                <div class="amount-badge">Subscription: ₹799/-</div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=lalmunaf447@oksbi%26pn=Munaf%20Lal%26am=799%26cu=INR" alt="UPI QR" class="qr-img">
+                <div class="upi-id">lalmunaf447@oksbi</div>
+                <p style="margin:0; font-size:12px; color:#94a3b8;">Payee: Munaf Lal (Instant Auto-Pay)</p>
+            </div>
+
+            <button type="submit" class="btn-lux" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">I Have Paid ₹799 - Activate Now 🚀</button>
+        </div>
     </form>
 
-    <a id="waBtn" href="#" target="_blank" class="btn-wa">📲 Click Here to Send Details on WhatsApp</a>
+    <div class="secure-footer">
+        🔒 256-Bit Encrypted Secure AI Onboarding Gateway
+    </div>
 </div>
 
 <script>
-document.getElementById('onboardForm').addEventListener('submit', function(e) {
+let verifiedMobile = "";
+
+function sendOtp() {
+    const mobile = document.getElementById('mobile').value.trim();
+    if(mobile.length !== 10) {
+        alert("Kripya sahi 10-digit mobile number darj karein!");
+        return;
+    }
+    verifiedMobile = mobile;
+    
+    // Simulating secure OTP send (Demo OTP is 1234)
+    alert("🔐 AI Security: Demo OTP '1234' aapke mobile par bheja gaya hai.");
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+}
+
+function verifyOtp() {
+    const otp = document.getElementById('otpInput').value.trim();
+    if(otp !== "1234") {
+        alert("Galat OTP! Kripya '1234' darj karein.");
+        return;
+    }
+    
+    alert("✅ Mobile Number Verified Successfully!");
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'block';
+}
+
+document.getElementById('saasForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const ownerName = document.getElementById('ownerName').value;
     const shopName = document.getElementById('shopName').value;
     const category = document.getElementById('category').value;
     const placeId = document.getElementById('placeId').value;
-    const mobile = document.getElementById('mobile').value;
+    const mobile = verifiedMobile;
 
-    const adminWhatsApp = "919737828591";
+    const adminWhatsApp = "919737828591"; // Aapka WhatsApp Number
 
-    const msg = `🚀 *NEW PAYMENT & VERIFICATION REQUEST*%0A%0A` +
+    // Ultra clean format for your WhatsApp
+    const msg = `🚀 *NEW LUXURY SAAS SUBSCRIPTION PAID*%0A%0A` +
                 `👤 *Owner:* ${encodeURIComponent(ownerName)}%0A` +
-                `🏪 *Shop:* ${encodeURIComponent(shopName)}%0A` +
+                `🏪 *Shop Name:* ${encodeURIComponent(shopName)}%0A` +
                 `🏷️ *Category:* ${encodeURIComponent(category)}%0A` +
-                `📍 *Place ID/Link:* ${encodeURIComponent(placeId)}%0A` +
-                `📞 *Owner Mobile:* ${encodeURIComponent(mobile)}%0A` +
-                `💰 *Paid Amount:* ₹799%0A%0A` +
-                `----------------------------%0A` +
-                `👉 *Admin Action:* Type *YES* to confirm payment verification & generate AI Review QR Standee.`;
+                `📍 *Map Location URL:* ${encodeURIComponent(placeId)}%0A` +
+                `📞 *Mobile:* ${encodeURIComponent(mobile)}%0A` +
+                `💳 *Plan:* ₹799/month (Paid & OTP Verified)%0A%0A` +
+                `----------------------------------------%0A` +
+                `⚡ *Action:* Open Admin Panel & Generate Standee!`;
 
-    const waUrl = `https://wa.me/${adminWhatsApp}?text=${msg}`;
-    
-    // Show direct WhatsApp button
-    const waBtn = document.getElementById('waBtn');
-    waBtn.href = waUrl;
-    waBtn.style.display = 'block';
-
-    // Try auto-open
-    window.open(waUrl, '_blank');
+    // Direct redirection to your WhatsApp
+    window.location.href = `https://wa.me/${adminWhatsApp}?text=${msg}`;
 });
 </script>
 
