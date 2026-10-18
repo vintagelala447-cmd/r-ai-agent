@@ -1,81 +1,215 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Review Assistant</title>
+    <title>R & AI AGENT | 5-Star AI Review Portal</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: #1e293b; padding: 25px; border-radius: 16px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
-        h3 { color: #38bdf8; margin-top: 0; }
-        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
-        .chip { background: #0f172a; border: 1px solid #475569; padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; }
-        .chip.selected { background: #0284c7; border-color: #38bdf8; color: white; }
-        textarea { width: 100%; height: 110px; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 14px; margin-top: 10px; resize: none; }
-        .btn { background: #10b981; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        body { 
+            background: #050505; 
+            color: #f8fafc; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Live AI Particle Canvas Background */
+        #aiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Luxurious Black & Gold Card */
+        .saas-card { 
+            position: relative;
+            z-index: 2;
+            background: rgba(15, 15, 15, 0.88); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid #d4af37; 
+            padding: 32px 28px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 440px; 
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.25), inset 0 0 15px rgba(212, 175, 55, 0.1); 
+            text-align: center;
+        }
+        
+        .brand-header h1 { 
+            font-size: 24px; 
+            margin: 0; 
+            font-weight: 800; 
+            letter-spacing: 1px; 
+            background: linear-gradient(135deg, #fff7ad 0%, #ffa900 50%, #d4af37 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-transform: uppercase;
+        }
+        
+        .stars-box { font-size: 28px; margin: 15px 0; color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+
+        .review-box {
+            background: rgba(24, 24, 27, 0.9);
+            border: 1px solid #52525b;
+            border-radius: 12px;
+            padding: 16px;
+            color: #fef08a;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: left;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-gold { 
+            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); 
+            color: #000; 
+            border: 1px solid #ffe4e6; 
+            padding: 16px; 
+            width: 100%; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5); }
+
+        .secure-footer { font-size: 11px; color: #a1a1aa; margin-top: 18px; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h3 id="displayShopName">Store Review</h3>
-    <p style="font-size: 13px; color: #94a3b8;">Select your experience to generate 5-Star Review:</p>
+<!-- Live AI Particle Animation Canvas -->
+<canvas id="aiCanvas"></canvas>
 
-    <div class="chip-container" id="chipBox">
-        <div class="chip selected" onclick="toggleChip(this)">Great Quality</div>
-        <div class="chip selected" onclick="toggleChip(this)">Excellent Service</div>
-        <div class="chip" onclick="toggleChip(this)">Best Prices</div>
-        <div class="chip" onclick="toggleChip(this)">Polite Staff</div>
-        <div class="chip" onclick="toggleChip(this)">Highly Recommended</div>
+<div class="saas-card">
+    <div class="brand-header">
+        <h1 id="shopTitleName">WELCOME TO STORE</h1>
     </div>
 
-    <textarea id="reviewText" readonly></textarea>
+    <div class="stars-box">
+        ⭐⭐⭐⭐⭐
+    </div>
 
-    <button class="btn" onclick="submitAndOpenGoogle()">Copy Review & Post on Google Maps</button>
+    <p style="color:#d4d4d8; font-size:13px; margin-bottom:12px;">AI Generated 5-Star Review for Google Maps:</p>
+
+    <div class="review-box" id="aiReviewText">
+        Loading AI Generated Review...
+    </div>
+
+    <button class="btn-gold" onclick="copyAndPostReview()">🚀 Copy Review & Post on Google Maps</button>
+
+    <div class="secure-footer">
+        ⚡ Powered by R & AI AGENT Autonomous Engine
+    </div>
 </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const shopName = urlParams.get('shop') || 'Store';
-const placeId = urlParams.get('placeid') || '';
+/* Live AI Canvas Background */
+const canvas = document.getElementById('aiCanvas');
+const ctx = canvas.getContext('2d');
 
-document.getElementById('displayShopName').innerText = shopName;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-function toggleChip(element) {
-    element.classList.toggle('selected');
-    generateAIReview();
+const particles = [];
+const particleCount = 60;
+
+for (let i = 0; i < particleCount; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: (Math.random() - 0.5) * 1.2,
+        radius: Math.random() * 2 + 1
+    });
 }
 
-function generateAIReview() {
-    const selectedChips = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.innerText);
-    if(selectedChips.length === 0) {
-        document.getElementById('reviewText').value = `Had a great experience at ${shopName}! Highly recommended.`;
-        return;
-    }
-    document.getElementById('reviewText').value = `Visited ${shopName} today. ${selectedChips.join(', ')}. Loved the overall experience and atmosphere!`;
-}
+function animateAI() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particleCount; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
 
-generateAIReview();
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-function submitAndOpenGoogle() {
-    const text = document.getElementById('reviewText').value;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#d4af37';
+        ctx.fill();
 
-    // Automatic Clipboard Copy
-    navigator.clipboard.writeText(text).then(() => {
-        alert("✅ Review text copy ho gaya hai!\n\nGoogle Maps khulte hi long-press karke PASTE karein aur POST dabayein.");
-        
-        // Direct Write-Review Link (Opens 2nd Photo Layout with 5 Stars)
-        let googleReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
-        
-        if(!placeId || placeId.startsWith('http')) {
-            googleReviewUrl = placeId || `https://www.google.com/search?q=${encodeURIComponent(shopName)}`;
+        for (let j = i + 1; j < particleCount; j++) {
+            let p2 = particles[j];
+            let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+            if (dist < 130) {
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.strokeStyle = `rgba(212, 175, 55, ${1 - dist / 130})`;
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
+            }
         }
+    }
+    requestAnimationFrame(animateAI);
+}
+animateAI();
 
-        window.location.href = googleReviewUrl;
-    }).catch(() => {
-        // Fallback redirect
-        window.location.href = `https://search.google.com/local/writereview?placeid=${placeId}`;
+/* Dynamic Review Engine */
+const urlParams = new URLSearchParams(window.location.search);
+const shopName = urlParams.get('shop') || 'This Shop';
+let placeId = urlParams.get('placeid') || '';
+
+document.getElementById('shopTitleName').innerText = shopName;
+
+const aiReviews = [
+    `Excellent service and top-notch quality products at ${shopName}! Extremely satisfied with the experience. Highly recommended! ⭐⭐⭐⭐⭐`,
+    `Great customer support and very professional behavior at ${shopName}. Will definitely visit again! ⭐⭐⭐⭐⭐`,
+    `Outstanding experience at ${shopName}. High quality, fast service, and great value for money. 5 Stars! ⭐⭐⭐⭐⭐`,
+    `Very impressed with ${shopName}! Premium quality and very friendly staff. Recommended to everyone! ⭐⭐⭐⭐⭐`
+];
+
+const selectedReview = aiReviews[Math.floor(Math.random() * aiReviews.length)];
+document.getElementById('aiReviewText').innerText = `"${selectedReview}"`;
+
+function copyAndPostReview() {
+    navigator.clipboard.writeText(selectedReview).then(() => {
+        alert("✅ Review Copied to Clipboard! Ab Google Maps par paste kar dein.");
+        
+        let destinationUrl = "";
+        if(placeId.startsWith("http")) {
+            destinationUrl = placeId;
+        } else if(placeId) {
+            destinationUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+        } else {
+            destinationUrl = `https://www.google.com/maps/search/${encodeURIComponent(shopName)}`;
+        }
+        
+        window.location.href = destinationUrl;
+    }).catch(err => {
+        let destinationUrl = placeId.startsWith("http") ? placeId : `https://search.google.com/local/writereview?placeid=${placeId}`;
+        window.location.href = destinationUrl;
     });
 }
 </script>
