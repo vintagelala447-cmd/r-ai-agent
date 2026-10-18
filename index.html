@@ -14,15 +14,17 @@
         input:focus { border-color: #38bdf8; outline: none; }
         .btn { background: #0284c7; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
         .btn:hover { background: #0369a1; }
-        .payment-box { background: #0f172a; border: 1px dashed #38bdf8; padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px; }
-        .upi-id { color: #f59e0b; font-weight: bold; font-size: 18px; margin: 5px 0; }
+        .payment-box { background: #0f172a; border: 1px dashed #38bdf8; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px; }
+        .upi-id { color: #f59e0b; font-weight: bold; font-size: 18px; margin: 8px 0; }
+        .qr-img { width: 190px; height: 190px; margin: 10px auto; border-radius: 10px; border: 2px solid #38bdf8; padding: 6px; background: #fff; display: block; }
+        .amount-tag { background: #10b981; color: #fff; font-weight: bold; padding: 4px 10px; border-radius: 20px; display: inline-block; font-size: 13px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <h2>🚀 R & AI AGENT Setup</h2>
-    <p style="text-align:center; font-size: 14px; color: #cbd5e1;">Google Map AI Review QR System (₹499/month)</p>
+    <p style="text-align:center; font-size: 14px; color: #cbd5e1;">Google Map AI Review QR System (₹799/month)</p>
     
     <form id="onboardForm">
         <label>Shop / Business Name</label>
@@ -34,8 +36,13 @@
         <label>Owner Mobile Number</label>
         <input type="tel" id="mobile" placeholder="10 Digit Number" required>
 
+        <!-- Payment Box with ₹799 Direct Auto-Amount QR -->
         <div class="payment-box">
-            <p style="margin:0; font-size:14px; color:#cbd5e1;">Pay Subscription Fee (₹499)</p>
+            <span class="amount-tag">Scan to Pay ₹799</span>
+            
+            <!-- ₹799 Direct Payment UPI QR Code -->
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=lalmunaf447@oksbi%26pn=Munaf%20Lal%26am=799%26cu=INR" alt="UPI QR Scanner" class="qr-img">
+            
             <div class="upi-id">lalmunaf447@oksbi</div>
             <p style="margin:0; font-size:12px; color:#94a3b8;">Payee Name: Munaf Lal</p>
         </div>
