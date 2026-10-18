@@ -35,7 +35,7 @@
         .saas-card { 
             position: relative;
             z-index: 2;
-            background: rgba(15, 15, 15, 0.85); 
+            background: rgba(15, 15, 15, 0.88); 
             backdrop-filter: blur(20px); 
             border: 1px solid #d4af37; 
             padding: 32px 28px; 
@@ -111,7 +111,7 @@
 </head>
 <body>
 
-<!-- AI Live Animation Canvas -->
+<!-- Live AI Particle Animation Canvas -->
 <canvas id="aiCanvas"></canvas>
 
 <div class="saas-card">
@@ -146,9 +146,9 @@
             <input type="tel" id="mobile" placeholder="10 Digit Mobile Number" maxlength="10" required>
         </div>
 
-        <!-- ₹799 UPI Payment Scanner -->
+        <!-- ₹799 Auto UPI Scanner -->
         <div class="payment-box">
-            <div class="amount-badge">VIP Plan: ₹799 /-</div>
+            <div class="amount-badge">VIP Plan: ₹799 / Month</div>
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=lalmunaf447@oksbi%26pn=Munaf%20Lal%26am=799%26cu=INR" alt="UPI QR" class="qr-img">
             <div class="upi-id">lalmunaf447@oksbi</div>
             <p style="margin:0; font-size:12px; color:#a1a1aa;">Payee: Munaf Lal (Instant Auto-Pay)</p>
@@ -163,7 +163,7 @@
 </div>
 
 <script>
-/* Live AI Neural Particles Animation */
+/* Live AI Neural Animation Canvas */
 const canvas = document.getElementById('aiCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -190,7 +190,6 @@ for (let i = 0; i < particleCount; i++) {
 function animateAI() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw Particles & Neural Lines
     for (let i = 0; i < particleCount; i++) {
         let p = particles[i];
         p.x += p.vx;
@@ -221,7 +220,7 @@ function animateAI() {
 }
 animateAI();
 
-/* Form Submission & WhatsApp Direct Alert */
+/* Direct WhatsApp Form Submission */
 document.getElementById('saasForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -244,7 +243,7 @@ document.getElementById('saasForm').addEventListener('submit', function(e) {
                 `🏷️ *Category:* ${encodeURIComponent(category)}%0A` +
                 `📍 *Map Location URL:* ${encodeURIComponent(placeId)}%0A` +
                 `📞 *Mobile:* ${encodeURIComponent(mobile)}%0A` +
-                `💳 *Plan:* ₹799/month (Paid & Verified)%0A%0A` +
+                `💳 *Plan:* ₹799/month (Paid)%0A%0A` +
                 `----------------------------------------%0A` +
                 `⚡ *Action:* Open Admin Panel & Generate Standee!`;
 
