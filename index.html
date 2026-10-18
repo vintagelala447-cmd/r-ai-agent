@@ -33,6 +33,9 @@
         <label>Shop / Business Name</label>
         <input type="text" id="shopName" placeholder="e.g. Tokyo Fashion" required>
 
+        <label>Business Category</label>
+        <input type="text" id="category" placeholder="e.g. Clothing / Salon / Mobile Store" required>
+
         <label>Google Place ID (या Direct Review Link)</label>
         <input type="text" id="placeId" placeholder="ChIJ... ya Google Maps Direct Link" required>
 
@@ -43,7 +46,6 @@
         <div class="payment-box">
             <span class="amount-tag">Scan to Pay ₹799</span>
             
-            <!-- ₹799 Direct Payment UPI QR Code -->
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=lalmunaf447@oksbi%26pn=Munaf%20Lal%26am=799%26cu=INR" alt="UPI QR Scanner" class="qr-img">
             
             <div class="upi-id">lalmunaf447@oksbi</div>
@@ -62,6 +64,7 @@ document.getElementById('onboardForm').addEventListener('submit', function(e) {
         id: 'shop_' + Date.now(),
         ownerName: document.getElementById('ownerName').value,
         shopName: document.getElementById('shopName').value,
+        category: document.getElementById('category').value,
         placeId: document.getElementById('placeId').value,
         mobile: document.getElementById('mobile').value,
         status: 'Pending',
@@ -72,7 +75,7 @@ document.getElementById('onboardForm').addEventListener('submit', function(e) {
     requests.push(shopData);
     localStorage.setItem('rai_requests', JSON.stringify(requests));
 
-    alert('Request Submitted Successfully! Verification ke baad aapka QR Stand activate kar diya jayega.');
+    alert('Request Submitted Successfully! Admin verification ke baad aapka AI Review QR Code generate ho jayega.');
     this.reset();
 });
 </script>
