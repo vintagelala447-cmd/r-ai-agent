@@ -8,27 +8,38 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #0f172a; color: #f8fafc; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; }
-        h2 { color: #38bdf8; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1e293b; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #334155; }
-        th { background: #0f172a; color: #38bdf8; }
-        .btn-verify { background: #10b981; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-        .btn-qr { background: #0284c7; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .badge-pending { background: #f59e0b; color: #000; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .badge-active { background: #10b981; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        h2 { color: #38bdf8; text-align: center; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #0f172a; color: #38bdf8; font-size: 15px; }
+        .btn-verify { background: #10b981; color: white; border: none; padding: 9px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-view { background: #0284c7; color: white; border: none; padding: 9px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
+        .badge-pending { background: #f59e0b; color: #000; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-active { background: #10b981; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+
+        /* Modal / Standee Card Styling */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 999; }
+        .standee-card { background: linear-gradient(135deg, #0f172a, #1e293b); border: 3px solid #38bdf8; border-radius: 20px; padding: 30px; text-align: center; width: 340px; box-shadow: 0 15px 35px rgba(0,0,0,0.8); position: relative; }
+        .standee-card h2 { color: #38bdf8; margin: 0 0 5px 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .standee-card p.tagline { color: #cbd5e1; font-size: 13px; margin-bottom: 20px; font-weight: 500; }
+        .qr-wrapper { background: #ffffff; padding: 15px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 20px rgba(0,0,0,0.4); margin-bottom: 20px; }
+        .qr-wrapper img { width: 220px; height: 220px; display: block; }
+        .standee-card p.footer-text { color: #f59e0b; font-size: 14px; font-weight: bold; margin: 0 0 20px 0; }
+        .btn-download { background: #10b981; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: block; width: 100%; margin-bottom: 10px; }
+        .close-btn { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🛡️ R & AI AGENT - Admin Verification Panel</h2>
+    <h2>🛡️ R & AI AGENT - Private Admin Verification</h2>
     
     <table>
         <thead>
             <tr>
-                <th>Owner Name</th>
-                <th>Shop Name</th>
-                <th>Mobile</th>
+                <th>Owner & Shop Name</th>
+                <th>Category</th>
+                <th>Mobile Number</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -37,6 +48,23 @@
             <!-- Dynamic Data -->
         </tbody>
     </table>
+</div>
+
+<!-- Standee Card Modal -->
+<div class="modal" id="cardModal">
+    <div class="standee-card">
+        <h2 id="cardShopName">Shop Name</h2>
+        <p class="tagline">⭐ Scan to Leave 5-Star AI Review ⭐</p>
+        
+        <div class="qr-wrapper">
+            <img id="cardQrImage" src="" alt="AI Review QR">
+        </div>
+        
+        <p class="footer-text">Powered by R & AI AGENT</p>
+        
+        <a id="downloadBtn" href="" target="_blank" class="btn-download">📥 Download QR Card</a>
+        <button class="close-btn" onclick="closeModal()">Close Preview</button>
+    </div>
 </div>
 
 <script>
@@ -52,17 +80,17 @@ function renderRequests() {
 
     requests.forEach((req, index) => {
         const reviewUrl = `https://vintagelala447-cmd.github.io/r-ai-agent/review.html?shop=${encodeURIComponent(req.shopName)}&placeid=${encodeURIComponent(req.placeId)}`;
-        const qrCodeApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(reviewUrl)}`;
+        const qrCodeApi = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(reviewUrl)}`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><strong>${req.ownerName || 'N/A'}</strong></td>
-            <td>${req.shopName}</td>
+            <td><strong>${req.shopName}</strong><br><small style="color:#94a3b8;">Owner: ${req.ownerName || 'N/A'}</small></td>
+            <td>${req.category || 'N/A'}</td>
             <td>${req.mobile}</td>
             <td><span class="${req.status === 'Active' ? 'badge-active' : 'badge-pending'}">${req.status}</span></td>
             <td>
                 ${req.status === 'Pending' ? `<button class="btn-verify" onclick="verifyShop(${index})">Verify & Activate</button>` : ''}
-                ${req.status === 'Active' ? `<a href="${qrCodeApi}" target="_blank" class="btn-qr">Download QR Card</a>` : ''}
+                ${req.status === 'Active' ? `<button class="btn-view" onclick="openModal('${req.shopName.replace(/'/g, "\\'")}', '${qrCodeApi}')">View & Download QR Stand</button>` : ''}
             </td>
         `;
         table.appendChild(tr);
@@ -74,6 +102,17 @@ function verifyShop(index) {
     requests[index].status = 'Active';
     localStorage.setItem('rai_requests', JSON.stringify(requests));
     renderRequests();
+}
+
+function openModal(shopName, qrUrl) {
+    document.getElementById('cardShopName').innerText = shopName;
+    document.getElementById('cardQrImage').src = qrUrl;
+    document.getElementById('downloadBtn').href = qrUrl;
+    document.getElementById('cardModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('cardModal').style.display = 'none';
 }
 
 renderRequests();
