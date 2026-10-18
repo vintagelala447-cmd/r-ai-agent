@@ -1,174 +1,83 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>R & AI AGENT - Private Admin Panel</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R & AI AGENT - Private Admin</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h2 { color: #38bdf8; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1e293b; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #0f172a; color: #38bdf8; }
+        .btn-verify { background: #10b981; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        .btn-qr { background: #0284c7; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .badge-pending { background: #f59e0b; color: #000; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-active { background: #10b981; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen p-6">
+<body>
 
-  <div class="max-w-5xl mx-auto">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
-      <div>
-        <h1 class="text-3xl font-bold text-indigo-400">R & AI AGENT</h1>
-        <p class="text-xs text-gray-400">🔒 Private Admin Dashboard (QR Stand Manager)</p>
-      </div>
-      <button onclick="clearAllData()" class="bg-red-600 hover:bg-red-700 text-xs px-4 py-2 rounded-xl font-semibold">Clear All Data</button>
-    </div>
-
-    <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
-        <p class="text-xs text-gray-400 uppercase font-semibold">Total Requests</p>
-        <h3 class="text-3xl font-bold text-white mt-1" id="totalShops">0</h3>
-      </div>
-      <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
-        <p class="text-xs text-gray-400 uppercase font-semibold">Verified & Active</p>
-        <h3 class="text-3xl font-bold text-green-400 mt-1" id="totalPaid">0</h3>
-      </div>
-      <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
-        <p class="text-xs text-gray-400 uppercase font-semibold">Total Revenue</p>
-        <h3 class="text-3xl font-bold text-indigo-400 mt-1" id="totalRevenue">₹0</h3>
-      </div>
-    </div>
-
-    <!-- Table -->
-    <div class="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
-      <table class="w-full text-left border-collapse">
+<div class="container">
+    <h2>🛡️ R & AI AGENT - Admin Verification Panel</h2>
+    
+    <table>
         <thead>
-          <tr class="bg-gray-700/50 text-gray-400 text-xs uppercase tracking-wider">
-            <th class="p-4">Shop Name</th>
-            <th class="p-4">Owner & Mobile</th>
-            <th class="p-4">Category</th>
-            <th class="p-4">Payment Status</th>
-            <th class="p-4 text-right">Action / QR Code</th>
-          </tr>
+            <tr>
+                <th>Shop Name</th>
+                <th>Mobile</th>
+                <th>UTR ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
         </thead>
-        <tbody id="privateShopTable" class="divide-y divide-gray-700 text-sm"></tbody>
-      </table>
-    </div>
-  </div>
+        <tbody id="requestTable">
+            <!-- Dynamic Data -->
+        </tbody>
+    </table>
+</div>
 
-  <!-- FULL BRANDED QR STAND MODAL -->
-  <div id="qrModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white text-gray-900 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl relative">
-      
-      <div id="standCard" class="border-4 border-indigo-600 rounded-2xl p-5 bg-gradient-to-b from-indigo-50 to-white">
-        <h2 class="text-2xl font-black text-indigo-900 tracking-wider">R & AI AGENT</h2>
-        <p class="text-[10px] font-bold text-indigo-600 tracking-widest uppercase mb-3">AI Powered Google Review System</p>
-        
-        <div class="bg-indigo-600 text-white py-2 px-3 rounded-xl font-extrabold text-lg shadow-md mb-1" id="modalShopName">Shop Name</div>
-        <p class="text-[11px] font-semibold text-gray-500 mb-3" id="modalShopCategory">Category</p>
+<script>
+function renderRequests() {
+    const table = document.getElementById('requestTable');
+    let requests = JSON.parse(localStorage.getItem('rai_requests') || '[]');
+    table.innerHTML = '';
 
-        <p class="text-xs font-bold text-gray-700 mb-2">Scan QR & Share Your Experience!</p>
-
-        <div id="qrcodeContainer" class="flex justify-center mb-3 p-3 bg-white border-2 border-indigo-100 rounded-2xl shadow-inner inline-block"></div>
-
-        <div class="flex items-center justify-center text-yellow-400 text-2xl space-x-1 mb-2">★ ★ ★ ★ ★</div>
-        <p class="text-[10px] font-medium text-gray-500">Fast 5-Star AI Review in 1 Click</p>
-      </div>
-
-      <div class="mt-4 space-y-2">
-        <button onclick="window.print()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg transition">🖨️ Print / Save Stand Card</button>
-        <button onclick="closeModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-xl text-sm transition">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function loadAdminPanel() {
-      const tableBody = document.getElementById('privateShopTable');
-      tableBody.innerHTML = '';
-
-      let allShops = JSON.parse(localStorage.getItem('r_ai_shops')) || [];
-
-      document.getElementById('totalShops').innerText = allShops.length;
-      document.getElementById('totalPaid').innerText = allShops.filter(s => s.paid).length;
-      document.getElementById('totalRevenue').innerText = `₹${allShops.filter(s => s.paid).length * 499}`;
-
-      if (allShops.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-500">Abhi tak koi request nahi aayi hai.</td></tr>`;
+    if(requests.length === 0) {
+        table.innerHTML = '<tr><td colspan="5" style="text-align:center;">Koi pending request nahi hai.</td></tr>';
         return;
-      }
+    }
 
-      allShops.forEach((shop, index) => {
-        let tr = document.createElement('tr');
+    requests.forEach((req, index) => {
+        const reviewUrl = `https://vintagelala447-cmd.github.io/r-ai-agent/review.html?shop=${encodeURIComponent(req.shopName)}&placeid=${encodeURIComponent(req.placeId)}`;
+        const qrCodeApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(reviewUrl)}`;
+
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-4 font-bold text-white">${shop.shopName}</td>
-          <td class="p-4">
-            <div class="text-gray-200">${shop.ownerName}</div>
-            <div class="text-xs text-indigo-300 font-mono">${shop.mobile}</div>
-          </td>
-          <td class="p-4 text-xs text-gray-300">${shop.shopCategory || 'General'}</td>
-          <td class="p-4">
-            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${shop.paid ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-yellow-900/50 text-yellow-300 border border-yellow-700'}">
-              ${shop.paid ? 'Verified (Paid)' : 'Pending Verification'}
-            </span>
-          </td>
-          <td class="p-4 text-right space-x-2">
-            ${!shop.paid 
-              ? `<button onclick="verifyPayment(${index})" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Verify & Unlock QR</button>` 
-              : `<button onclick="viewQR(${index})" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">View Stand Card</button>`
-            }
-            <button onclick="deleteShop(${index})" class="bg-red-600/30 hover:bg-red-600 text-red-300 text-xs px-3 py-1.5 rounded-lg">Delete</button>
-          </td>
+            <td><strong>${req.shopName}</strong></td>
+            <td>${req.mobile}</td>
+            <td><code>${req.utr}</code></td>
+            <td><span class="${req.status === 'Active' ? 'badge-active' : 'badge-pending'}">${req.status}</span></td>
+            <td>
+                ${req.status === 'Pending' ? `<button class="btn-verify" onclick="verifyShop(${index})">Verify & Activate</button>` : ''}
+                ${req.status === 'Active' ? `<a href="${qrCodeApi}" target="_blank" class="btn-qr">Download QR Card</a>` : ''}
+            </td>
         `;
-        tableBody.appendChild(tr);
-      });
-    }
+        table.appendChild(tr);
+    });
+}
 
-    function verifyPayment(index) {
-      let allShops = JSON.parse(localStorage.getItem('r_ai_shops')) || [];
-      allShops[index].paid = true;
-      localStorage.setItem('r_ai_shops', JSON.stringify(allShops));
-      alert("✅ Payment Verified! QR Stand unlock ho gaya hai.");
-      loadAdminPanel();
-      viewQR(index);
-    }
+function verifyShop(index) {
+    let requests = JSON.parse(localStorage.getItem('rai_requests') || '[]');
+    requests[index].status = 'Active';
+    localStorage.setItem('rai_requests', JSON.stringify(requests));
+    renderRequests();
+}
 
-    function viewQR(index) {
-      let allShops = JSON.parse(localStorage.getItem('r_ai_shops')) || [];
-      let shop = allShops[index];
+renderRequests();
+</script>
 
-      // Updated Absolute URL generation for review.html
-      const reviewUrl = new URL('review.html', window.location.href);
-      reviewUrl.searchParams.set('shop', shop.shopName);
-      reviewUrl.searchParams.set('category', shop.shopCategory || '');
-      reviewUrl.searchParams.set('map', shop.mapUrl);
-
-      const customerPageUrl = reviewUrl.toString();
-      const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(customerPageUrl)}`;
-
-      document.getElementById('modalShopName').innerText = shop.shopName;
-      document.getElementById('modalShopCategory').innerText = shop.shopCategory || 'General Store';
-      document.getElementById('qrcodeContainer').innerHTML = `<img src="${qrImageUrl}" alt="AI Review QR Code" class="w-44 h-44 rounded-lg">`;
-
-      document.getElementById('qrModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('qrModal').classList.add('hidden');
-    }
-
-    function deleteShop(index) {
-      if (confirm("Record delete karna hai?")) {
-        let allShops = JSON.parse(localStorage.getItem('r_ai_shops')) || [];
-        allShops.splice(index, 1);
-        localStorage.setItem('r_ai_shops', JSON.stringify(allShops));
-        loadAdminPanel();
-      }
-    }
-
-    function clearAllData() {
-      if (confirm("Saara data delete karein?")) {
-        localStorage.removeItem('r_ai_shops');
-        loadAdminPanel();
-      }
-    }
-
-    loadAdminPanel();
-  </script>
 </body>
 </html>
